@@ -10,6 +10,11 @@ public class BankService {
 
     public void deposit(int accountId, double amount) {
 
+        if (amount <= 0) {
+            System.out.println("Invalid Deposit Amount!");
+            return;
+        }
+
         String updateBalance =
                 "UPDATE accounts SET balance = balance + ? WHERE id = ?";
 
@@ -20,16 +25,20 @@ public class BankService {
 
         try (Connection connection = DBConnection.getConnection()) {
 
-            // Update account balance
             PreparedStatement balanceStatement =
                     connection.prepareStatement(updateBalance);
 
             balanceStatement.setDouble(1, amount);
             balanceStatement.setInt(2, accountId);
 
-            balanceStatement.executeUpdate();
+            int rowsUpdated =
+                    balanceStatement.executeUpdate();
 
-            // Save transaction history
+            if (rowsUpdated == 0) {
+                System.out.println("Account Not Found!");
+                return;
+            }
+
             PreparedStatement transactionStatement =
                     connection.prepareStatement(insertTransaction);
 
@@ -47,70 +56,75 @@ public class BankService {
             e.printStackTrace();
         }
     }
-        public void withdraw(int accountId, double amount) {
+    public void withdraw(int accountId, double amount) {
 
-            String checkBalance =
-                    "SELECT balance FROM accounts WHERE id = ?";
+        // Amount validation
+        if (amount <= 0) {
+            System.out.println("Invalid Withdrawal Amount!");
+            return;
+        }
 
-            String updateBalance =
-                    "UPDATE accounts SET balance = balance - ? WHERE id = ?";
+        String checkBalance =
+                "SELECT balance FROM accounts WHERE id = ?";
 
-            String insertTransaction =
-                    "INSERT INTO transactions " +
-                            "(account_id, transaction_type, amount, description) " +
-                            "VALUES (?, 'WITHDRAW', ?, 'Cash withdrawal')";
+        String updateBalance =
+                "UPDATE accounts SET balance = balance - ? WHERE id = ?";
 
-            try (Connection connection = DBConnection.getConnection()) {
+        String insertTransaction =
+                "INSERT INTO transactions " +
+                        "(account_id, transaction_type, amount, description) " +
+                        "VALUES (?, 'WITHDRAW', ?, 'Cash withdrawal')";
 
-                // Check current balance
-                PreparedStatement balanceCheck =
-                        connection.prepareStatement(checkBalance);
+        try (Connection connection = DBConnection.getConnection()) {
 
-                balanceCheck.setInt(1, accountId);
+            PreparedStatement balanceCheck =
+                    connection.prepareStatement(checkBalance);
 
-                var result = balanceCheck.executeQuery();
+            balanceCheck.setInt(1, accountId);
 
-                if (result.next()) {
+            var result = balanceCheck.executeQuery();
 
-                    double currentBalance = result.getDouble("balance");
+            if (result.next()) {
 
-                    // Check sufficient balance
-                    if (currentBalance < amount) {
-                        System.out.println("Insufficient Balance!");
-                        return;
-                    }
+                double currentBalance =
+                        result.getDouble("balance");
 
-                    // Update balance
-                    PreparedStatement balanceStatement =
-                            connection.prepareStatement(updateBalance);
-
-                    balanceStatement.setDouble(1, amount);
-                    balanceStatement.setInt(2, accountId);
-
-                    balanceStatement.executeUpdate();
-
-                    // Save transaction
-                    PreparedStatement transactionStatement =
-                            connection.prepareStatement(insertTransaction);
-
-                    transactionStatement.setInt(1, accountId);
-                    transactionStatement.setDouble(2, amount);
-
-                    transactionStatement.executeUpdate();
-
-                    System.out.println("Withdrawal Successful!");
-                    System.out.println("Amount Withdrawn: ₹" + amount);
-
-                } else {
-                    System.out.println("Account Not Found!");
+                // Insufficient balance check
+                if (currentBalance < amount) {
+                    System.out.println("Insufficient Balance!");
+                    return;
                 }
 
-            } catch (SQLException e) {
+                PreparedStatement balanceStatement =
+                        connection.prepareStatement(updateBalance);
 
-                System.out.println("Withdrawal Failed!");
-                e.printStackTrace();
+                balanceStatement.setDouble(1, amount);
+                balanceStatement.setInt(2, accountId);
+
+                balanceStatement.executeUpdate();
+
+                PreparedStatement transactionStatement =
+                        connection.prepareStatement(insertTransaction);
+
+                transactionStatement.setInt(1, accountId);
+                transactionStatement.setDouble(2, amount);
+
+                transactionStatement.executeUpdate();
+
+                System.out.println("Withdrawal Successful!");
+                System.out.println("Amount Withdrawn: ₹" + amount);
+
+            } else {
+
+                System.out.println("Account Not Found!");
             }
+
+        } catch (SQLException e) {
+
+            System.out.println("Withdrawal Failed!");
+            e.printStackTrace();
         }
+    }
     public void checkBalance(int accountId) {
 
         String query =

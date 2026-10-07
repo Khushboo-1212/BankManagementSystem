@@ -12,6 +12,12 @@ public class Main {
 
     // Create BankService object
     BankService bankService = new BankService();
+    // Insufficient balance test
+    bankService.withdraw(1, 5000);
+    // Invalid withdrawal tests
+    //bankService.withdraw(1, 0);
+    //bankService.withdraw(1, -500);
+   // bankService.withdraw(1, 1000);
     // ================= ACCOUNT MANAGEMENT TEST =================
 
 // Create Account
@@ -23,20 +29,20 @@ public class Main {
     );*/
 
 // View Accounts
-    bankService.viewAccounts();
+  //  bankService.viewAccounts();
 
 // Search Account
-    bankService.searchAccount(2);
+  //  bankService.searchAccount(2);
 
 // Update Account
-    bankService.updateAccount(
+    /*bankService.updateAccount(
             2,
             "1000000007",
             "CURRENT"
-    );
+    );*/
 
 // Delete Account
-bankService.deleteAccount(2);
+//bankService.deleteAccount(2);
   //  bankService.deleteCustomer(5);
    /* bankService.updateCustomer(
             3,
