@@ -214,5 +214,44 @@ public class BankService {
             e.printStackTrace();
         }
     }
+    public void viewCustomers() {
+
+        String query =
+                "SELECT id, name, email, phone, address " +
+                        "FROM customers";
+
+        try (Connection connection = DBConnection.getConnection()) {
+
+            PreparedStatement statement =
+                    connection.prepareStatement(query);
+
+            var result = statement.executeQuery();
+
+            System.out.println("===== CUSTOMER LIST =====");
+
+            while (result.next()) {
+
+                int id = result.getInt("id");
+                String name = result.getString("name");
+                String email = result.getString("email");
+                String phone = result.getString("phone");
+                String address = result.getString("address");
+
+                System.out.println(
+                        "ID: " + id +
+                                " | Name: " + name +
+                                " | Email: " + email +
+                                " | Phone: " + phone +
+                                " | Address: " + address
+                );
+            }
+
+        } catch (SQLException e) {
+
+            System.out.println("Customer Fetch Failed!");
+            e.printStackTrace();
+        }
     }
+    }
+
 
