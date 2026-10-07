@@ -188,5 +188,31 @@ public class BankService {
             e.printStackTrace();
         }
     }
+    public void addCustomer(String name, String email, String phone, String address) {
+
+        String query =
+                "INSERT INTO customers (name, email, phone, address) " +
+                        "VALUES (?, ?, ?, ?)";
+
+        try (Connection connection = DBConnection.getConnection()) {
+
+            PreparedStatement statement =
+                    connection.prepareStatement(query);
+
+            statement.setString(1, name);
+            statement.setString(2, email);
+            statement.setString(3, phone);
+            statement.setString(4, address);
+
+            statement.executeUpdate();
+
+            System.out.println("Customer Added Successfully!");
+
+        } catch (SQLException e) {
+
+            System.out.println("Customer Addition Failed!");
+            e.printStackTrace();
+        }
+    }
     }
 

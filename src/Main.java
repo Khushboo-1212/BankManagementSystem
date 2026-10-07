@@ -12,6 +12,13 @@ public class Main {
 
     // Create BankService object
     BankService bankService = new BankService();
+    // Add Customer
+    bankService.addCustomer(
+            "Amit Kumar",
+            "amit123@gmail.com",
+            "9876543211",
+            "Patna"
+    );
 
     // Deposit ₹2000 into account ID 1
    // bankService.deposit(1, 2000);
