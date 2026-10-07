@@ -366,6 +366,221 @@ public class BankService {
             e.printStackTrace();
         }
     }
+    // ================= ACCOUNT MANAGEMENT =================
+
+    // 1. CREATE ACCOUNT
+    public void createAccount(
+            int customerId,
+            String accountNumber,
+            String accountType,
+            double balance) {
+
+        String query =
+                "INSERT INTO accounts " +
+                        "(customer_id, account_number, account_type, balance) " +
+                        "VALUES (?, ?, ?, ?)";
+
+        try (Connection connection = DBConnection.getConnection()) {
+
+            PreparedStatement statement =
+                    connection.prepareStatement(query);
+
+            statement.setInt(1, customerId);
+            statement.setString(2, accountNumber);
+            statement.setString(3, accountType);
+            statement.setDouble(4, balance);
+
+            statement.executeUpdate();
+
+            System.out.println("Account Created Successfully!");
+
+        } catch (SQLException e) {
+
+            System.out.println("Account Creation Failed!");
+            e.printStackTrace();
+        }
+    }
+
+
+    // 2. VIEW ALL ACCOUNTS
+    public void viewAccounts() {
+
+        String query =
+                "SELECT id, customer_id, account_number, " +
+                        "account_type, balance " +
+                        "FROM accounts";
+
+        try (Connection connection = DBConnection.getConnection()) {
+
+            PreparedStatement statement =
+                    connection.prepareStatement(query);
+
+            var result = statement.executeQuery();
+
+            System.out.println("===== ACCOUNT LIST =====");
+
+            while (result.next()) {
+
+                int id = result.getInt("id");
+                int customerId = result.getInt("customer_id");
+                String accountNumber =
+                        result.getString("account_number");
+                String accountType =
+                        result.getString("account_type");
+                double balance =
+                        result.getDouble("balance");
+
+                System.out.println(
+                        "ID: " + id +
+                                " | Customer ID: " + customerId +
+                                " | Account No: " + accountNumber +
+                                " | Type: " + accountType +
+                                " | Balance: ₹" + balance
+                );
+            }
+
+        } catch (SQLException e) {
+
+            System.out.println("Account Fetch Failed!");
+            e.printStackTrace();
+        }
+    }
+
+
+    // 3. SEARCH ACCOUNT
+    public void searchAccount(int accountId) {
+
+        String query =
+                "SELECT id, customer_id, account_number, " +
+                        "account_type, balance " +
+                        "FROM accounts WHERE id = ?";
+
+        try (Connection connection = DBConnection.getConnection()) {
+
+            PreparedStatement statement =
+                    connection.prepareStatement(query);
+
+            statement.setInt(1, accountId);
+
+            var result = statement.executeQuery();
+
+            if (result.next()) {
+
+                System.out.println("===== ACCOUNT FOUND =====");
+
+                System.out.println(
+                        "Account ID: " +
+                                result.getInt("id")
+                );
+
+                System.out.println(
+                        "Customer ID: " +
+                                result.getInt("customer_id")
+                );
+
+                System.out.println(
+                        "Account Number: " +
+                                result.getString("account_number")
+                );
+
+                System.out.println(
+                        "Account Type: " +
+                                result.getString("account_type")
+                );
+
+                System.out.println(
+                        "Balance: ₹" +
+                                result.getDouble("balance")
+                );
+
+            } else {
+
+                System.out.println("Account Not Found!");
+            }
+
+        } catch (SQLException e) {
+
+            System.out.println("Account Search Failed!");
+            e.printStackTrace();
+        }
+    }
+
+
+    // 4. UPDATE ACCOUNT
+    public void updateAccount(
+            int accountId,
+            String accountNumber,
+            String accountType) {
+
+        String query =
+                "UPDATE accounts " +
+                        "SET account_number = ?, account_type = ? " +
+                        "WHERE id = ?";
+
+        try (Connection connection = DBConnection.getConnection()) {
+
+            PreparedStatement statement =
+                    connection.prepareStatement(query);
+
+            statement.setString(1, accountNumber);
+            statement.setString(2, accountType);
+            statement.setInt(3, accountId);
+
+            int rowsUpdated =
+                    statement.executeUpdate();
+
+            if (rowsUpdated > 0) {
+
+                System.out.println(
+                        "Account Updated Successfully!"
+                );
+
+            } else {
+
+                System.out.println("Account Not Found!");
+            }
+
+        } catch (SQLException e) {
+
+            System.out.println("Account Update Failed!");
+            e.printStackTrace();
+        }
+    }
+
+
+    // 5. DELETE ACCOUNT
+    public void deleteAccount(int accountId) {
+
+        String query =
+                "DELETE FROM accounts WHERE id = ?";
+
+        try (Connection connection = DBConnection.getConnection()) {
+
+            PreparedStatement statement =
+                    connection.prepareStatement(query);
+
+            statement.setInt(1, accountId);
+
+            int rowsDeleted =
+                    statement.executeUpdate();
+
+            if (rowsDeleted > 0) {
+
+                System.out.println(
+                        "Account Deleted Successfully!"
+                );
+
+            } else {
+
+                System.out.println("Account Not Found!");
+            }
+
+        } catch (SQLException e) {
+
+            System.out.println("Account Deletion Failed!");
+            e.printStackTrace();
+        }
+    }
     }
 
 
