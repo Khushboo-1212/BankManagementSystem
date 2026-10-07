@@ -142,5 +142,51 @@ public class BankService {
             e.printStackTrace();
         }
     }
+    public void transactionHistory(int accountId) {
+
+        String query =
+                "SELECT transaction_type, amount, description, transaction_date " +
+                        "FROM transactions " +
+                        "WHERE account_id = ? " +
+                        "ORDER BY transaction_date DESC";
+
+        try (Connection connection = DBConnection.getConnection()) {
+
+            PreparedStatement statement =
+                    connection.prepareStatement(query);
+
+            statement.setInt(1, accountId);
+
+            var result = statement.executeQuery();
+
+            System.out.println("===== TRANSACTION HISTORY =====");
+
+            while (result.next()) {
+
+                String type =
+                        result.getString("transaction_type");
+
+                double amount =
+                        result.getDouble("amount");
+
+                String description =
+                        result.getString("description");
+
+                String date =
+                        result.getString("transaction_date");
+
+                System.out.println(
+                        type + " | ₹" + amount +
+                                " | " + description +
+                                " | " + date
+                );
+            }
+
+        } catch (SQLException e) {
+
+            System.out.println("Transaction History Failed!");
+            e.printStackTrace();
+        }
+    }
     }
 

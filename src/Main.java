@@ -17,5 +17,7 @@ public class Main {
    // bankService.deposit(1, 2000);
     //bankService.withdraw(1, 2000);
     bankService.checkBalance(1);
+    // Transaction History
+    bankService.transactionHistory(1);
   }
 }
