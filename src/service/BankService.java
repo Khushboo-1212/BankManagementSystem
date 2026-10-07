@@ -297,6 +297,46 @@ public class BankService {
             e.printStackTrace();
         }
     }
+    public void updateCustomer(
+            int customerId,
+            String name,
+            String email,
+            String phone,
+            String address) {
+
+        String query =
+                "UPDATE customers " +
+                        "SET name = ?, email = ?, phone = ?, address = ? " +
+                        "WHERE id = ?";
+
+        try (Connection connection = DBConnection.getConnection()) {
+
+            PreparedStatement statement =
+                    connection.prepareStatement(query);
+
+            statement.setString(1, name);
+            statement.setString(2, email);
+            statement.setString(3, phone);
+            statement.setString(4, address);
+            statement.setInt(5, customerId);
+
+            int rowsUpdated = statement.executeUpdate();
+
+            if (rowsUpdated > 0) {
+
+                System.out.println("Customer Updated Successfully!");
+
+            } else {
+
+                System.out.println("Customer Not Found!");
+            }
+
+        } catch (SQLException e) {
+
+            System.out.println("Customer Update Failed!");
+            e.printStackTrace();
+        }
+    }
     }
 
 
