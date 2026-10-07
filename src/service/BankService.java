@@ -252,6 +252,51 @@ public class BankService {
             e.printStackTrace();
         }
     }
+    public void searchCustomer(int customerId) {
+
+        String query =
+                "SELECT id, name, email, phone, address " +
+                        "FROM customers WHERE id = ?";
+
+        try (Connection connection = DBConnection.getConnection()) {
+
+            PreparedStatement statement =
+                    connection.prepareStatement(query);
+
+            statement.setInt(1, customerId);
+
+            var result = statement.executeQuery();
+
+            if (result.next()) {
+
+                System.out.println("===== CUSTOMER FOUND =====");
+
+                System.out.println("ID: " +
+                        result.getInt("id"));
+
+                System.out.println("Name: " +
+                        result.getString("name"));
+
+                System.out.println("Email: " +
+                        result.getString("email"));
+
+                System.out.println("Phone: " +
+                        result.getString("phone"));
+
+                System.out.println("Address: " +
+                        result.getString("address"));
+
+            } else {
+
+                System.out.println("Customer Not Found!");
+            }
+
+        } catch (SQLException e) {
+
+            System.out.println("Customer Search Failed!");
+            e.printStackTrace();
+        }
+    }
     }
 
 

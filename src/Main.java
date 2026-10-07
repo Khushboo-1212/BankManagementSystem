@@ -13,6 +13,7 @@ public class Main {
     // Create BankService object
     BankService bankService = new BankService();
     bankService.viewCustomers();
+    bankService.searchCustomer(3);
     // Add Customer
     /*bankService.addCustomer(
             "Amit Kumar",
