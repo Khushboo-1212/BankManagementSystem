@@ -337,6 +337,35 @@ public class BankService {
             e.printStackTrace();
         }
     }
+    public void deleteCustomer(int customerId) {
+
+        String query =
+                "DELETE FROM customers WHERE id = ?";
+
+        try (Connection connection = DBConnection.getConnection()) {
+
+            PreparedStatement statement =
+                    connection.prepareStatement(query);
+
+            statement.setInt(1, customerId);
+
+            int rowsDeleted = statement.executeUpdate();
+
+            if (rowsDeleted > 0) {
+
+                System.out.println("Customer Deleted Successfully!");
+
+            } else {
+
+                System.out.println("Customer Not Found!");
+            }
+
+        } catch (SQLException e) {
+
+            System.out.println("Customer Deletion Failed!");
+            e.printStackTrace();
+        }
+    }
     }
 
 
